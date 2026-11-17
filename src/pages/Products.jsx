@@ -1,9 +1,9 @@
-
+import { useParams } from "react-router-dom";
 
 const Products = () => {
-  return (
-    <div>Products</div>
-  )
-}
+  const params = useParams();
+  console.log(params.title);
+  return <div>la partie dynamique de cette route est : {params.title}</div>;
+};
 
-export default Products
+export default Products;

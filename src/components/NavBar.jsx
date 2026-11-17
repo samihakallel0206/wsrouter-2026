@@ -14,9 +14,10 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
 
-const pages = ["products", "services", "contact", "login"];
+const pages = ["home", "services", "contact", "login"];
 
-function NavBar() {
+function NavBar({ isAdmin, setIsAdmin }) {
+  const pageAuth = pages.filter((page) => (isAdmin ? page != "login" : page));
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -34,7 +35,9 @@ function NavBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  const handleLogout = () => {
+    setIsAdmin(false);
+  };
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -117,7 +120,7 @@ function NavBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
+            {pageAuth.map((page) => (
               <Link to={`/${page}`}>
                 <Button
                   key={page}
@@ -129,40 +132,52 @@ function NavBar() {
               </Link>
             ))}
           </Box>
+          <Link to={`/products/50`}>
+            <Button
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              Products
+            </Button>
+          </Link>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              <MenuItem key={"Dashboard"}>
-                <Link to={"/admin"}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Dashboard
-                  </Typography>
-                </Link>
-              </MenuItem>
-              
-              <MenuItem key={"Logout"}>
-                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-              </MenuItem>
-            </Menu>
+            {isAdmin && (
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}
+              >
+                <MenuItem key={"Dashboard"}>
+                  <Link to={"/admin"}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      Dashboard
+                    </Typography>
+                  </Link>
+                </MenuItem>
+
+                <MenuItem key={"Logout"}>
+                  <Button onClick={handleLogout}>
+                    <Typography sx={{ textAlign: "center" }}>Logout</Typography>
+                  </Button>
+                </MenuItem>
+              </Menu>
+            )}
           </Box>
         </Toolbar>
       </Container>
